@@ -8,9 +8,9 @@ def server_program():
     # get the hostname
     host = socket.gethostname()
     # initiate port no above 1024
-    port = 43434
+    port = 8080
     # get instance
-    server_socket = socket.socket()
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # try to bind host address and port together
     try:
         server_socket.bind((host, port))
@@ -22,21 +22,22 @@ def server_program():
     # accept new connection
     conn, address = server_socket.accept()
     print("Connection from: " + str(address))
+    print("Now listening...")
+    conn.send("You are connected to the server".encode())
     while True:
-        print("Now listening...")
-        listening()
-        sending('hey you sent something')
+        data = conn.recv(1024)
+        print(data)
 
-    # close the connection
-    conn.close()
+    # # close the connection
+    # conn.close()
 
-def listening():
-    data = conn.recv(1024).decode()
-    print(data)
+# def listening():
+#     data = conn.recv(1024).decode()
+#     print(data)
+#
+# def sending(input):
+#     conn.send(input.encode())
 
-def sending(input):
-    server_socket.send(input.encode())
-# def send(to_device, data):
 
 
 server_program()
