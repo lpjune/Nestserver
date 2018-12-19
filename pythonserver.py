@@ -29,7 +29,8 @@ def server_program():
         print(data)
         if data == 'ok':
             print('good job!')
-        conn.send("You are connected to the server".encode())
+        senddata = input("send data: ")
+        conn.sendall(senddata.encode())
 
     # # close the connection
     # conn.close()
