@@ -23,10 +23,13 @@ def server_program():
     conn, address = server_socket.accept()
     print("Connection from: " + str(address))
     print("Now listening...")
-    conn.send("You are connected to the server".encode())
+
     while True:
-        data = conn.recv(1024)
+        data = conn.recv(1024).decode().strip()
         print(data)
+        if data == 'ok':
+            print('good job!')
+        conn.send("You are connected to the server".encode())
 
     # # close the connection
     # conn.close()
