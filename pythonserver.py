@@ -25,23 +25,43 @@ def server_program():
     print("Now listening...")
 
     while True:
+        # listen for messages from client
         data = conn.recv(1024).decode().strip()
         print(data)
-        # wont send without \n because java uses readline
-        conn.send('hello there \n'.encode())
+        tasker(conn, data)
 
-
-
-    # # close the connection
+    # close the connection
     # conn.close()
 
-# def listening():
-#     data = conn.recv(1024).decode()
-#     print(data)
-#
-# def sending(input):
-#     conn.send(input.encode())
+def tasker(conn, msg):
+    if msg == "backButton":
+        sender(conn, 'Previous camera...')
 
+    elif msg == 'nextButton':
+        sender(conn, 'Next camera...')
+
+    elif msg == 'menuDiagnosticBtn':
+        sender(conn, 'Running diagnostics...')
+
+    elif msg == 'systemHaltButton':
+        sender(conn, '!HALTING!')
+
+    elif msg == 'doorsSwitch':
+        sender(conn, 'Opening door...')
+
+    elif msg == 'roofSwitch':
+        sender(conn, 'Opening roof...')
+
+    elif msg == 'extendPadSwitch':
+        sender(conn, 'Extending pad...')
+
+    elif msg == 'raisePadSwitch':
+        sender(conn, 'Raising pad...')
+
+
+def sender(conn, msg):
+    # wont send without \n because java uses readline
+    conn.send((msg + '\n').encode())
 
 
 server_program()
