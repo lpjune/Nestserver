@@ -27,10 +27,10 @@ def server_program():
     while True:
         data = conn.recv(1024).decode().strip()
         print(data)
-        if data == 'ok':
-            print('good job!')
-        senddata = input("send data: ")
-        conn.sendall(senddata.encode())
+        # wont send without \n because java uses readline
+        conn.send('hello there \n'.encode())
+
+
 
     # # close the connection
     # conn.close()
