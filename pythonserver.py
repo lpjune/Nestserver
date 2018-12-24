@@ -21,19 +21,24 @@ def server_program():
     server_socket.listen(5)
     # accept new connection
     conn, address = server_socket.accept()
+    running = True
     print("Connection from: " + str(address))
     print("Now listening...")
 
-    while True:
+    while running == True:
         # listen for messages from client
         data = conn.recv(1024).decode().strip()
         print(data)
         tasker(conn, data)
 
     # close the connection
-    # conn.close()
+    conn.close()
+    server_program()
+
+
 
 def tasker(conn, msg):
+    global running
     if msg == "backButton":
         sender(conn, 'Previous camera...')
 
@@ -46,17 +51,33 @@ def tasker(conn, msg):
     elif msg == 'systemHaltButton':
         sender(conn, '!HALTING!')
 
-    elif msg == 'doorsSwitch':
+    elif msg == 'doorsSwitchOn':
         sender(conn, 'Opening door...')
 
-    elif msg == 'roofSwitch':
+    elif msg == 'doorsSwitchOff':
+        sender(conn, 'Closing door...')
+
+    elif msg == 'roofSwitchOn':
         sender(conn, 'Opening roof...')
 
-    elif msg == 'extendPadSwitch':
+    elif msg == 'roofSwitchOff':
+        sender(conn, 'Closing roof...')
+
+    elif msg == 'extendPadSwitchOn':
         sender(conn, 'Extending pad...')
 
-    elif msg == 'raisePadSwitch':
+    elif msg == 'extendPadSwitchOff':
+        sender(conn, 'Retracting pad...')
+
+    elif msg == 'raisePadSwitchOn':
         sender(conn, 'Raising pad...')
+
+    elif msg == 'raisePadSwitchOff':
+        sender(conn, 'Lowering pad...')
+
+    elif msg == 'menuDisconnectBtn':
+            running = False
+
 
 
 def sender(conn, msg):
