@@ -1,13 +1,14 @@
 '''
-0.2
+0.3
 This program is currently the interface for the motor driver controller.
 In the future the call to main needs to be removed and this software would need to be called by another program
 It will likely need to be adapted to return information that is being printed in this version
 '''
 
+import time
 import serial
 
-ser = serial.Serial('COM5', 9600)
+ser = serial.Serial('COM4', 9600)
 
 
 #   this is supposed to search for available COM ports but I didn't get the opportunity to test it
@@ -23,14 +24,39 @@ def serial_control(command):
 
     command = command.encode('ascii')
     ser.write(command)
-
-    back_talk = ser.read()
-    back_talk = back_talk.decode('ascii')
+    if(command.decode('ascii') != '5'):
+        back_talk = ser.read()
+        back_talk = back_talk.decode('ascii')
 
     #   exit command
 
     if(command.decode('ascii').lower() == "exit"):
         return 'e'
+
+    #   lift actuator commands
+    
+    if(command.decode('ascii') == '5'):
+        lift_command = input("Enter T to change the top actuator position\nEnter B to change the bottom actuator position\n")
+        lift_command = lift_command.upper()
+        lift_command = lift_command.encode('ascii')
+        ser.write(lift_command)
+        print("Please wait 20 seconds...")
+        time.sleep(20)
+        back_talk = ser.read()
+        back_talk = back_talk.decode('ascii')
+        print('')
+        if(lift_command.decode('ascii') == 'T') and (back_talk == '>'):
+            print("The top lift was raised")
+            return 'n'
+        if(lift_command.decode('ascii') == 'T') and (back_talk == '<'):
+            print("The top lift was lowered")
+            return 'n'
+        if(lift_command.decode('ascii') == 'B') and (back_talk == '>'):
+            print("The bottom lift was raised")
+            return 'n'
+        if(lift_command.decode('ascii') == 'B') and (back_talk == '<'):
+            print("The bottom lift was lowered")
+            return 'n'
 
     #	one recieved
 
@@ -50,9 +76,10 @@ def serial_control(command):
         print("The", command_dictionary[command.decode('ascii')], "has been extended")
         return 'n'
 
-    if(back_talk == '1') and (command.decode('ascii') == '5'):
+    '''if(back_talk == '1') and (command.decode('ascii') == '5'):
         print("The", command_dictionary[command.decode('ascii')], "has been raised")
         return 'n'
+        '''
 
     if(back_talk == '1') and (command.decode('ascii') == '6'):
         print("The", command_dictionary[command.decode('ascii')], "have been opened")
@@ -76,9 +103,10 @@ def serial_control(command):
         print("The", command_dictionary[command.decode('ascii')], "has been retracted")
         return 'n'
 
-    if(back_talk == '0') and (command.decode('ascii') == '5'):
+    '''if(back_talk == '0') and (command.decode('ascii') == '5'):
         print("The", command_dictionary[command.decode('ascii')], "has been lowered")
         return 'n'
+        '''
 
     if(back_talk == '0') and (command.decode('ascii') == '6'):
         print("The", command_dictionary[command.decode('ascii')], "have been closed")
@@ -86,13 +114,14 @@ def serial_control(command):
 
     #   invalid command responses
 
-    elif(back_talk != '1') and (back_talk != '0'):
+    elif(back_talk != '1') and (back_talk != '0') and (back_talk != '>') and (back_talk != '<'):
         print("There was invalid input from the motor controller")
         return 'n'
 
     else:
         print("Invalid command.")
         return 'n'
+
 
 
 def main():
@@ -102,6 +131,7 @@ def main():
     print("0:\tEmergency Stop\n1:\tOn/Off\n2:\tLinear Actuator\n3:\tLeft Door\n4:\tRight Door\n5:\tLift Actuator\n6:\tBoth Doors\n")
     print("If door states do not match, command 6 will return an error\n")
     print("Enter exit to close the program.\n")
+    #print("Command 5: Lift Actuator will not work as intended. Do not use.")
     while(1):
         user_command = input("Enter a command here:\n")
         command = serial_control(user_command)
@@ -109,5 +139,5 @@ def main():
             break
         else:
             continue
-
+        
 main()
