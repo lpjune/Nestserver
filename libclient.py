@@ -3,7 +3,7 @@ import selectors
 import json
 import io
 import struct
-
+from tkinter import messagebox
 
 class Message:
     def __init__(self, selector, sock, addr, request):
@@ -83,18 +83,21 @@ class Message:
     def _process_response_json_content(self):
         content = self.response
         result = content.get("result")
-        print(f"got result: {result}")
-
+        #messagebox.showinfo("Hello", f"{result}")
+    
     def _process_response_binary_content(self):
         content = self.response
-        print(f"got response: {repr(content)}")
+        print(f"{repr(content)}")
 
     def process_events(self, mask):
         if mask & selectors.EVENT_READ:
-            self.read()
+            bottle = self.read()
+            result = bottle.get("result")
+            return result
         if mask & selectors.EVENT_WRITE:
             self.write()
-
+        
+    
     def read(self):
         self._read()
 
@@ -107,7 +110,9 @@ class Message:
 
         if self.jsonheader:
             if self.response is None:
-                self.process_response()
+                bottle = self.process_response()
+                self.close()
+        return bottle
 
     def write(self):
         if not self._request_queued:
@@ -121,7 +126,7 @@ class Message:
                 self._set_selector_events_mask("r")
 
     def close(self):
-        print("closing connection to", self.addr)
+        #print("closing connection to", self.addr)
         try:
             self.selector.unregister(self.sock)
         except Exception as e:
@@ -204,5 +209,6 @@ class Message:
                 #self.addr,
             #)
             self._process_response_binary_content()
-        # Close when response has been processed
-        self.close()
+        return self.response
+        
+        
