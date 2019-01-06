@@ -1,10 +1,18 @@
 # Nestserver
 Master computer server files for IMPRESS Nest
 
-To use app-server and app-client:
+Launch app-server
 
-1) Download app-server, app-client, libserver, libclient
-2) Launch app-server from command line: app-server.py 130.18.64.135 65432
-3) Launch app-client from python shell and enter your ip, port, and command
+Enter public IP into app-server
+
+Enter port number (ex. 65432) into app-server
+
+Press submit on app-server
+
+Launch app-client
+
+Enter same IP and port number into app-client
+
+Use buttons to send commands
 
 Use your public ip in the server address line
