@@ -9,7 +9,7 @@ void setup() {
  pinMode(A2, OUTPUT); //RELAY 2: LINEAR ACTUATOR
  pinMode(A3, OUTPUT); //RELAY 3: LEFT DOOR
  pinMode(A4, OUTPUT); //RELAY 4: RIGHT DOOR
- pinMode(A5, OUTPUT); //RELAY 5: LIFT ACTUATORS
+ pinMode(A5, OUTPUT); //RELAY 5: ROOF MOTOR
  //pinMode(A6, OUTPUT); //AUXILLERY RELAY
  //pinMode(A7, OUTPUT); //AUXILLERY RELAY
  pinMode(13, OUTPUT); // TOP RAISE
@@ -92,9 +92,9 @@ void switchControl()  {
    static bool linear_extended = false;
    static bool left_open = false;
    static bool right_open = false;
-   static bool lift_extended = false;
-
-  switch(control_var)
+   static bool roof = false;
+ 
+   switch(control_var)
   {
     case '0':
     emergency_stop = !emergency_stop;
@@ -192,6 +192,19 @@ void switchControl()  {
     }
     else{
       digitalWrite(A4, LOW);
+      //returns that the command is low
+      Serial.write('0');
+    }
+    break;
+    
+    case '7':
+    if(roof == true){
+      digitalWrite(A5, HIGH);
+      //returns that the command is high
+      Serial.write('1');
+    }
+    else{
+      digitalWrite(A5, LOW);
       //returns that the command is low
       Serial.write('0');
     }
