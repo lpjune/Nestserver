@@ -93,8 +93,8 @@ void switchControl()  {
    static bool left_open = false;
    static bool right_open = false;
    static bool roof = false;
- 
-   switch(control_var)
+
+  switch(control_var)
   {
     case '0':
     emergency_stop = !emergency_stop;
@@ -196,7 +196,7 @@ void switchControl()  {
       Serial.write('0');
     }
     break;
-    
+
     case '7':
     if(roof == true){
       digitalWrite(A5, HIGH);
