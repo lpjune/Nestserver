@@ -1,7 +1,6 @@
 '''
 This module is used to control motors and lifts. All commands are sent to an arduino that
 will actually control these mechanisms. All commands are sent via USB as serial.
-This is designed to work with NEST server.
 Austin Flynt
 MS STATE IMPRESS LAB
 '''
@@ -173,4 +172,34 @@ def floor_pad():
 
 ################################################################################
 
+def roof():
 
+    global roof
+
+    command = '7'.encode('ascii')
+    ser.write(command)
+    back_talk = ser.read()
+    back_talk = back_talk.decode('ascii')
+    if back_talk == '1':
+        roof == True
+        return 'roof_open'
+
+    if back_talk == '0':
+        roof == False
+        return 'roof_closed'
+    else:
+        return
+
+################################################################################
+
+
+
+
+
+
+
+
+
+
+
+    
