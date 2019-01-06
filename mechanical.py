@@ -1,6 +1,7 @@
 '''
 This module is used to control motors and lifts. All commands are sent to an arduino that
 will actually control these mechanisms. All commands are sent via USB as serial.
+This is designed to work with NEST server.
 Austin Flynt
 MS STATE IMPRESS LAB
 '''
