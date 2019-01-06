@@ -5,20 +5,29 @@ import json
 import io
 import struct
 
+doorStatus = 0
+roofStatus = 0
+bPadStatus = 0
+tPadStatus = 0
+
+status = str(doorStatus) + str(roofStatus) + str(bPadStatus) + str(tPadStatus)
+
 request_search = {
     "backButton": "Previous camera...",
     "nextButton": "Next camera...",
     "menuDiagnosticBtn": "Running diagnostics...",
     "systemHaltButton": "HALTING.",
     "doorsSwitchOn": "Opening doors...",
-    "doorsSwitchOff": "Closing door...",
+    "doorsSwitchOff": "Closing doors...",
     "roofSwitchOn": "Opening roof...",
     "roofSwitchOff": "Closing roof...",
     "extendPadSwitchOn": "Extending pad...",
     "extendPadSwitchOff": "Retracting pad...",
     "raisePadSwitchOn": "Raising pad...",
-    "raisePadSwitchOff": "Lowering pad..."
+    "raisePadSwitchOff": "Lowering pad...",
+    "status": status
 }
+
 
 
 class Message:
@@ -32,6 +41,24 @@ class Message:
         self.jsonheader = None
         self.request = None
         self.response_created = False
+
+    def refresh(self):
+        global request_search
+        global status
+        request_search = {
+            "backButton": "Previous camera...",
+            "nextButton": "Next camera...",
+            "menuDiagnosticBtn": "Running diagnostics...",
+            "systemHaltButton": "HALTING.",
+            "doorsSwitchOn": "Opening doors...",
+            "doorsSwitchOff": "Closing doors...",
+            "roofSwitchOn": "Opening roof...",
+            "roofSwitchOff": "Closing roof...",
+            "extendPadSwitchOn": "Extending pad...",
+            "extendPadSwitchOff": "Retracting pad...",
+            "raisePadSwitchOn": "Raising pad...",
+            "raisePadSwitchOff": "Lowering pad...",
+            "status": status}
 
     def _set_selector_events_mask(self, mode):
         """Set selector to listen for events: mode is 'r', 'w', or 'rw'."""
@@ -99,11 +126,68 @@ class Message:
         return message
 
     def _create_response_json_content(self):
+
+        global doorStatus
+        global roofStatus
+        global bPadStatus
+        global tPadStatus
+        global status
+
         action = self.request.get("action")
         if action == "search":
             query = self.request.get("value")
-            answer = request_search.get(query) or f'No match for "{query}".'
+            ###
+            if query == "doorsSwitchOff" and bPadStatus == 1:
+                answer = "Error: Cannot close doors with bottom pad extended"
+            elif query == "extendPadSwitchOn" and doorStatus == 0:
+                answer = "Error: Cannot extend pad with doors closed"
+            elif query == "raisePadSwitchOn" and roofStatus == 0:
+                answer = "Error: Cannot raise pad with roof closed"
+            elif query == "roofSwitchOff" and tPadStatus == 1:
+                answer = "Error: Cannot close roof with pad raised"
+            elif query == "doorsSwitchOn" and doorStatus == 1:
+                answer = "Error: Doors already open"
+            elif query == "doorsSwitchOff" and doorStatus == 0:
+                answer = "Error: Doors already closed"
+            elif query == "roofSwitchOn" and roofStatus == 1:
+                answer = "Error: Roof already open"
+            elif query == "roofSwitchOff" and roofStatus == 0:
+                answer = "Error: Roof already closed"
+            elif query == "extendPadSwitchOn" and bPadStatus == 1:
+                answer = "Error: Bottom Pad already extended"
+            elif query == "extendPadSwitchOff" and bPadStatus == 0:
+                answer = "Error: Bottom Pad already retracted"
+            elif query == "raisePadSwitchOn" and tPadStatus == 1:
+                answer = "Error: Top Pad already raised"
+            elif query == "raisePadSwitchOff" and tPadStatus == 0:
+                answer = "Error: Top Pad already lowered"
+            else:
+                answer = request_search.get(query) or f'No match for "{query}".'
+
+            ###
+            if answer == "Opening doors...":
+                doorStatus = 1
+            elif answer == "Closing doors...":
+                doorStatus = 0
+            elif answer == "Opening roof...":
+                roofStatus = 1
+            elif answer == "Closing roof...":
+                roofStatus = 0
+            elif answer == "Extending pad...":
+                bPadStatus = 1
+            elif answer == "Retracting pad...":
+                bPadStatus = 0
+            elif answer == "Raising pad...":
+                tPadStatus = 1
+            elif answer == "Lowering pad...":
+                tPadStatus = 0
+                
+            
+            status = str(doorStatus) + str(roofStatus) + str(bPadStatus) + str(tPadStatus)
+            self.refresh()
+            answer = answer + status
             content = {"result": answer}
+            
         else:
             content = {"result": f'Error: invalid action "{action}".'}
         content_encoding = "utf-8"
@@ -112,6 +196,7 @@ class Message:
             "content_type": "text/json",
             "content_encoding": content_encoding,
         }
+        
         return response
 
     def _create_response_binary_content(self):

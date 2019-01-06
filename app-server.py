@@ -4,11 +4,22 @@ import sys
 import socket
 import selectors
 import traceback
-
+from tkinter import *
 import libserver
 
-sel = selectors.DefaultSelector()
 
+
+
+top = Tk()
+top.title('Server')
+
+def kill():
+    top.destroy()
+    quit()
+
+
+
+sel = selectors.DefaultSelector()
 
 def accept_wrapper(sock):
     conn, addr = sock.accept()  # Should be ready to read
@@ -17,12 +28,28 @@ def accept_wrapper(sock):
     message = libserver.Message(sel, conn, addr)
     sel.register(conn, selectors.EVENT_READ, data=message)
 
+L1 = Label(top, text="Server")
+L1.grid(row=0, column=0)
+E1 = Entry(top, bd = 5)
+E1.insert(END, '130.18.64.135')
+E1.grid(row=0, column=1)
 
-if len(sys.argv) != 3:
-    print("usage:", sys.argv[0], "<host> <port>")
-    sys.exit(1)
+L2 = Label(top, text="Port")
+L2.grid(row=1, column=0)
+E2 = Entry(top, bd = 5)
+E2.insert(END, '65432')
+E2.grid(row=1, column=1)
 
-host, port = sys.argv[1], int(sys.argv[2])
+var = IntVar()
+button = Button(top, text="Submit", command=lambda: var.set(1))
+button.grid(row=4, column=1)
+
+exitb = Button(top, text="Exit", command=kill)
+exitb.grid(row=5, column=2)
+
+button.wait_variable(var)
+
+host, port = E1.get(), int(E2.get())
 lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Avoid bind() exception: OSError: [Errno 48] Address already in use
 lsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -32,8 +59,10 @@ print("listening on", (host, port))
 lsock.setblocking(False)
 sel.register(lsock, selectors.EVENT_READ, data=None)
 
+top.destroy()
+
 try:
-    while True:
+    while True:            
         events = sel.select(timeout=None)
         for key, mask in events:
             if key.data is None:
@@ -52,3 +81,6 @@ except KeyboardInterrupt:
     print("caught keyboard interrupt, exiting")
 finally:
     sel.close()
+
+
+top.mainloop()
