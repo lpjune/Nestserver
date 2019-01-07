@@ -43,7 +43,10 @@ def lift(level):
 
     global top
     global bottom
-        
+    
+    command = '5'.encode('ascii')
+    ser.write(command)
+    
     if level =='top':
         ser.write('T'.encode('ascii'))
         print("Please wait 20 seconds...")
