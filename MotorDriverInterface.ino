@@ -1,4 +1,8 @@
-
+/*
+Code for the arduino controlling mechanical systems in the NEST.
+MS STATE IMPRESS LAB
+Austin Flynt
+*/
 bool top = false;
 bool bottom = false;
 int prox;
