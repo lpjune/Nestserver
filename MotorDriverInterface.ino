@@ -3,6 +3,8 @@ bool top = false;
 bool bottom = false;
 int prox;
 char lift_var;
+// nest status = {emergency stop=0, on/off=1, linear actuator=2, left=3, right=4, lift top=5, lift bottom=6, roof=7}
+char nest_status[8] = {'l','l','l','l','l','l','l','l'};
 void setup() {
  pinMode(A0, OUTPUT); //RELAY 0: EMERGENCY STOP
  pinMode(A1, OUTPUT); //RELAY 1: COMMAND ON/OFF
@@ -45,6 +47,8 @@ void lift_control() {
       digitalWrite(13, LOW);
       //Serial.print("The top lift has been raised\n");
       Serial.write('>');
+      nest_status[5] = 'h';
+      
       }
     
     
@@ -54,6 +58,7 @@ void lift_control() {
       digitalWrite(12, LOW);
       //Serial.print("The top lift has been lowed\n");
       Serial.write('<');
+      nest_status[5] = 'l';
     }
     break;
 
@@ -65,6 +70,7 @@ void lift_control() {
       digitalWrite(11, LOW);
       //Serial.print("The bottom lifts have been raised\n");
       Serial.write('>');
+      nest_status[6] = 'h';
     }
     
     else{
@@ -73,6 +79,7 @@ void lift_control() {
       digitalWrite(10, LOW);
       //Serial.print("The bottom lifts have been lowered\n");
       Serial.write('<');
+      nest_status[6] = 'l';
     }
     break;
 
@@ -102,11 +109,13 @@ void switchControl()  {
       digitalWrite(A0, HIGH);
       //returns that the command is high
       Serial.write('1');
+      nest_status[0] = 'h';
     }
     else{
       digitalWrite(A0, LOW);
       //returns that the command is low
       Serial.write('0');
+      nest_status[0] = 'l';
     }
     break;
 
@@ -116,11 +125,13 @@ void switchControl()  {
       digitalWrite(A1, HIGH);
        //returns that the command is high
       Serial.write('1');
+      nest_status[1] = 'h';
     }
     else{
       digitalWrite(A1, LOW);
       //returns that the command is low
       Serial.write('0');
+      nest_status[1] = 'l';
     }
     break;
 
@@ -130,11 +141,13 @@ void switchControl()  {
       digitalWrite(A2, HIGH);
        //returns that the command is high
       Serial.write('1');
+      nest_status[2] = 'h';
     }
     else{
       digitalWrite(A2, LOW);
       //returns that the command is low
       Serial.write('0');
+      nest_status[2] = 'l';
     }
     break;
 
@@ -144,11 +157,13 @@ void switchControl()  {
       digitalWrite(A3, HIGH);
        //returns that the command is high
       Serial.write('1');
+      nest_status[3] = 'h';
     }
     else{
       digitalWrite(A3, LOW);
       //returns that the command is low
       Serial.write('0');
+      nest_status[3] = 'l';
     }
     break;
 
@@ -157,11 +172,13 @@ void switchControl()  {
     if(right_open == true){
       digitalWrite(A4, HIGH);
       Serial.write('1');
+      nest_status[4] = 'h';
     }
     else{
       digitalWrite(A4, LOW);
       //returns that the command is low
       Serial.write('0');
+      nest_status[4] = 'l';
     }
     break;
 
@@ -170,44 +187,23 @@ void switchControl()  {
     lift_control();
     break;
 
-    case '6':
-    if(left_open != right_open){
-      Serial.write('!');
-      break;
-    }
-    left_open = !left_open;
-    if(left_open == true){
-      digitalWrite(A3, HIGH);
-       //returns that the command is high
-    }
-    else{
-      digitalWrite(A3, LOW);
-      //returns that the command is low
-    }
- 
-    right_open = !right_open;
-    if(right_open == true){
-      digitalWrite(A4, HIGH);
-      Serial.write('1');
-    }
-    else{
-      digitalWrite(A4, LOW);
-      //returns that the command is low
-      Serial.write('0');
-    }
-    break;
-
     case '7':
     if(roof == true){
       digitalWrite(A5, HIGH);
       //returns that the command is high
       Serial.write('1');
+      nest_status[7] = 'h';
     }
     else{
       digitalWrite(A5, LOW);
       //returns that the command is low
       Serial.write('0');
+      nest_status[7] = 'l';
     }
+    break;
+
+    case '8':
+    Serial.write(nest_status);
     break;
 
     default:
