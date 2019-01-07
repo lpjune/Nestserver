@@ -1,12 +1,6 @@
-'''This is the test script for mechanical.py. Serial communication must be established
-   with an Arduino in order for mechanical.py to work.
-   Austin Flynt
-   MS STATE IMPRESS LAB
-'''
-
 from mechanical import *
 time.sleep(1)
-print("0 = Emergency stop\n1 = On/Off\n2 = Floor actuator\n3 = Doors\n5 = Lift\n7 = Roof\nEnter exit to quit")
+print("0 = Emergency stop\n1 = On/Off\n2 = Floor actuator\n3 = Doors\n5 = Lift\n7 = Roof\n8 = Status\nEnter exit to quit")
 def mech_test(command):
     if command == '0':
         task = emergency_stop()
@@ -32,6 +26,10 @@ def mech_test(command):
         return
     elif command == '7':
         task = roof()
+        print(task)
+        return
+    elif command == '8':
+        task = status()
         print(task)
         return
     else:
