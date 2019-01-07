@@ -192,6 +192,7 @@ void switchControl()  {
     break;
 
     case '7':
+    roof = !roof;
     if(roof == true){
       digitalWrite(A5, HIGH);
       //returns that the command is high
