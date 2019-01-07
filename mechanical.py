@@ -192,14 +192,15 @@ def roof():
 
 ################################################################################
 
-
-
-
-
-
-
-
-
-
-
-    
+def status():
+    data_str = ''
+    command = '8'.encode('ascii')
+    ser.write(command)
+    while len(data_str) < 8:
+        data = ser.read()
+        data = data.decode('ascii')
+        if data == 'l' or data == 'h':
+            data_str = data_str + data
+    status = data_str
+    print(status)
+    return status
