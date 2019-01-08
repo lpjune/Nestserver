@@ -79,7 +79,7 @@ def lift(level):
         
         return back_talk
     else:
-        return
+        return "Unexpected Input"
                 
 ################################################################################
             
@@ -97,7 +97,6 @@ def emergency_stop():
         return 'stop'
     
     if back_talk == '0':
-        print("SYSTEM RESUME")
         return 'resume'
     else:
         return
@@ -114,11 +113,9 @@ def on_off_switch():
     if back_talk == '!':
         print("Unexpected Input")
     if back_talk == '1':
-        print("On")
         return 'on'
     
     if back_talk == '0':
-        print("Off")
         return 'off'
     else:
         return
@@ -165,7 +162,7 @@ def doors(side):
                 return 'right_closed'
             
     else:
-        return
+        return "Unexpected Input"
 
 ################################################################################
     
