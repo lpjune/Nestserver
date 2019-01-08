@@ -197,17 +197,19 @@ def nest_status():
     data_str = ''
     command = '8'.encode('ascii')
     ser.write(command)
+    
     while len(data_str) < 8:
         data = ser.read()
         data = data.decode('ascii')
+        
         if data == 'l':
             data = '0'
-            data_str = data_str + data
+            
         if data == 'h':
             data = '1'
-            data_str = data_str + data
+            
+        data_str = data_str + data
             
     status = data_str
-    #print(status)
     return status
     
