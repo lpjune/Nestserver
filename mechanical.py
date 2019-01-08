@@ -8,7 +8,7 @@ MS STATE IMPRESS LAB
 import time
 import serial
 
-port = 'COM8'
+port = 'COM4'
 
 ser = serial.Serial(port, 9600)
 
@@ -43,9 +43,12 @@ def lift(level):
 
     global top
     global bottom
+
+    level = level.lower()
     command = '5'.encode('ascii')
     ser.write(command)
-    if level =='top':
+    
+    if level =='top' or level == 't':
         ser.write('T'.encode('ascii'))
         print("Please wait 20 seconds...")
         time.sleep(20)
@@ -60,7 +63,7 @@ def lift(level):
         
         return back_talk
                 
-    if level == 'bottom':
+    if level == 'bottom' or level == 'b':
         ser.write('B'.encode('ascii'))
         print("Please wait 20 seconds...")
         time.sleep(20)
@@ -111,11 +114,11 @@ def on_off_switch():
     if back_talk == '!':
         print("Unexpected Input")
     if back_talk == '1':
-        #print("On")
+        print("On")
         return 'on'
     
     if back_talk == '0':
-        #print("Off")
+        print("Off")
         return 'off'
     else:
         return
@@ -126,8 +129,9 @@ def doors(side):
     
     global left
     global right
-    
-    if side == 'left':
+
+    side = side.lower()
+    if side == 'left' or side == 'l':
         command = '3'.encode('ascii')
         ser.write(command)
         back_talk = ser.read()
@@ -144,7 +148,7 @@ def doors(side):
             return 'left_closed'
         
 
-    if side == 'right':
+    if side == 'right' or side == 'r':
             command = '4'.encode('ascii')
             ser.write(command)
             back_talk = ser.read()
