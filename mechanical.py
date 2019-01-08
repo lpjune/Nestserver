@@ -8,7 +8,7 @@ MS STATE IMPRESS LAB
 import time
 import serial
 
-port = 'COM4'
+port = 'COM8'
 
 ser = serial.Serial(port, 9600)
 
@@ -43,10 +43,8 @@ def lift(level):
 
     global top
     global bottom
-    
     command = '5'.encode('ascii')
     ser.write(command)
-    
     if level =='top':
         ser.write('T'.encode('ascii'))
         print("Please wait 20 seconds...")
@@ -105,11 +103,11 @@ def on_off_switch():
     back_talk = ser.read()
     back_talk = back_talk.decode('ascii')
     if back_talk == '1':
-        print("On")
+        #print("On")
         return 'on'
     
     if back_talk == '0':
-        print("Off")
+        #print("Off")
         return 'off'
     else:
         return
@@ -195,15 +193,21 @@ def roof():
 
 ################################################################################
 
-def status():
+def nest_status():
     data_str = ''
     command = '8'.encode('ascii')
     ser.write(command)
     while len(data_str) < 8:
         data = ser.read()
         data = data.decode('ascii')
-        if data == 'l' or data == 'h':
+        if data == 'l':
+            data = '0'
             data_str = data_str + data
+        if data == 'h':
+            data = '1'
+            data_str = data_str + data
+            
     status = data_str
-    print(status)
+    #print(status)
     return status
+    

@@ -8,8 +8,6 @@ from tkinter import *
 import libserver
 
 
-
-
 top = Tk()
 top.title('Server')
 

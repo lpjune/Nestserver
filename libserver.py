@@ -4,13 +4,17 @@ import selectors
 import json
 import io
 import struct
+import time
+import serial
+from mechanical import *
 
 doorStatus = 0
 roofStatus = 0
 bPadStatus = 0
 tPadStatus = 0
+powerStatus = 0
 
-status = str(doorStatus) + str(roofStatus) + str(bPadStatus) + str(tPadStatus)
+status = str(doorStatus) + str(roofStatus) + str(bPadStatus) + str(tPadStatus) + str(powerStatus)
 
 request_search = {
     "backButton": "Previous camera...",
@@ -25,7 +29,8 @@ request_search = {
     "extendPadSwitchOff": "Retracting pad...",
     "raisePadSwitchOn": "Raising pad...",
     "raisePadSwitchOff": "Lowering pad...",
-    "status": status
+    "status": status,
+    "switchPower": "Toggled Power "
 }
 
 
@@ -58,7 +63,9 @@ class Message:
             "extendPadSwitchOff": "Retracting pad...",
             "raisePadSwitchOn": "Raising pad...",
             "raisePadSwitchOff": "Lowering pad...",
-            "status": status}
+            "status": status,
+            "switchPower": "Toggled Power "
+            }
 
     def _set_selector_events_mask(self, mode):
         """Set selector to listen for events: mode is 'r', 'w', or 'rw'."""
@@ -124,6 +131,8 @@ class Message:
         message_hdr = struct.pack(">H", len(jsonheader_bytes))
         message = message_hdr + jsonheader_bytes + content_bytes
         return message
+    
+###################################################################
 
     def _create_response_json_content(self):
 
@@ -131,59 +140,109 @@ class Message:
         global roofStatus
         global bPadStatus
         global tPadStatus
+        global powerStatus
         global status
-
+        motorStatus = nest_status()
+        
+        if motorStatus[3] == '1' and motorStatus[4] == '1':
+            doorStatus = '1'
+        else:
+            doorStatus = '0'
+            
+        roofStatus = motorStatus[7]
+        bPadStatus = motorStatus[2]
+        tPadStatus = motorStatus[6]
+        powerStatus = motorStatus[1]
+        
+        status = str(doorStatus) + str(roofStatus) + str(bPadStatus) + str(tPadStatus) + str(powerStatus)
+        
         action = self.request.get("action")
         if action == "search":
             query = self.request.get("value")
-            ###
-            if query == "doorsSwitchOff" and bPadStatus == 1:
+            
+            ###Before the instruction is sent
+            if query == "doorsSwitchOff" and bPadStatus == '1':
                 answer = "Error: Cannot close doors with bottom pad extended"
-            elif query == "extendPadSwitchOn" and doorStatus == 0:
+            elif query == "extendPadSwitchOn" and doorStatus == '0':
                 answer = "Error: Cannot extend pad with doors closed"
-            elif query == "raisePadSwitchOn" and roofStatus == 0:
+            elif query == "raisePadSwitchOn" and roofStatus == '0':
                 answer = "Error: Cannot raise pad with roof closed"
-            elif query == "roofSwitchOff" and tPadStatus == 1:
+            elif query == "roofSwitchOff" and tPadStatus == '1':
                 answer = "Error: Cannot close roof with pad raised"
-            elif query == "doorsSwitchOn" and doorStatus == 1:
+            elif query == "doorsSwitchOn" and doorStatus == '1':
                 answer = "Error: Doors already open"
-            elif query == "doorsSwitchOff" and doorStatus == 0:
+            elif query == "doorsSwitchOff" and doorStatus == '0':
                 answer = "Error: Doors already closed"
-            elif query == "roofSwitchOn" and roofStatus == 1:
+            elif query == "roofSwitchOn" and roofStatus == '1':
                 answer = "Error: Roof already open"
-            elif query == "roofSwitchOff" and roofStatus == 0:
+            elif query == "roofSwitchOff" and roofStatus == '0':
                 answer = "Error: Roof already closed"
-            elif query == "extendPadSwitchOn" and bPadStatus == 1:
+            elif query == "extendPadSwitchOn" and bPadStatus == '1':
                 answer = "Error: Bottom Pad already extended"
-            elif query == "extendPadSwitchOff" and bPadStatus == 0:
+            elif query == "extendPadSwitchOff" and bPadStatus == '0':
                 answer = "Error: Bottom Pad already retracted"
-            elif query == "raisePadSwitchOn" and tPadStatus == 1:
+            elif query == "raisePadSwitchOn" and tPadStatus == '1':
                 answer = "Error: Top Pad already raised"
-            elif query == "raisePadSwitchOff" and tPadStatus == 0:
+            elif query == "raisePadSwitchOff" and tPadStatus == '0':
                 answer = "Error: Top Pad already lowered"
             else:
                 answer = request_search.get(query) or f'No match for "{query}".'
 
-            ###
-            if answer == "Opening doors...":
-                doorStatus = 1
-            elif answer == "Closing doors...":
-                doorStatus = 0
-            elif answer == "Opening roof...":
-                roofStatus = 1
-            elif answer == "Closing roof...":
-                roofStatus = 0
-            elif answer == "Extending pad...":
-                bPadStatus = 1
-            elif answer == "Retracting pad...":
-                bPadStatus = 0
-            elif answer == "Raising pad...":
-                tPadStatus = 1
-            elif answer == "Lowering pad...":
-                tPadStatus = 0
-                
             
-            status = str(doorStatus) + str(roofStatus) + str(bPadStatus) + str(tPadStatus)
+            ###Execution
+            
+            if answer == "Opening doors...":
+                left = doors("left")
+                right = doors("right")
+                print(left)
+                print(right)
+            elif answer == "Closing doors...":
+                left = doors("left")
+                right = doors("right")
+                print(left)
+                print(right)
+            elif answer == "Opening roof...":
+                top_roof = roof()
+                print(top_roof)
+            elif answer == "Closing roof...":
+                top_roof = roof()
+                print(top_roof)
+            elif answer == "Extending pad...":
+                bPad = floor_pad()
+                print(bPad)
+            elif answer == "Retracting pad...":
+                bPad = floor_pad()
+                print(bPad)
+            elif answer == "Raising pad...":
+                #tPad = lift('top')
+                tPad = lift('bottom')
+                print(tPad)
+            elif answer == "Lowering pad...":
+                #tPad = lift('top')
+                tPad = lift('bottom')
+                print(tPad)
+            
+            if answer == "Toggled Power ":
+                on_off_switch()
+                if motorStatus[1] == '1':
+                    answer = answer + 'Off'
+                else:
+                    answer = answer + 'On'
+                    
+            motorStatus = nest_status()
+                
+            print(motorStatus)
+            if motorStatus[3] == '1' and motorStatus[4] == '1':
+                doorStatus = '1'
+            else:
+                doorStatus = '0'
+                
+            roofStatus = motorStatus[7]
+            bPadStatus = motorStatus[2]
+            tPadStatus = motorStatus[6]
+            powerStatus = motorStatus[1]
+            
+            status = str(doorStatus) + str(roofStatus) + str(bPadStatus) + str(tPadStatus) + str(powerStatus)
             self.refresh()
             answer = answer + status
             content = {"result": answer}
@@ -198,7 +257,9 @@ class Message:
         }
         
         return response
-
+    
+############################################################
+    
     def _create_response_binary_content(self):
         response = {
             "content_bytes": b"First 10 bytes of request: "
