@@ -1,6 +1,12 @@
 from mechanical import *
+'''
+This script is used to test mechanical.py. All commands are sent to an arduino that
+will actually control these mechanisms. All commands are sent via USB as serial.
+Austin Flynt
+MS STATE IMPRESS LAB
+'''
 time.sleep(1)
-print("0 = Emergency stop\n1 = On/Off\n2 = Floor actuator\n3 = Doors\n5 = Lift\n7 = Roof\n8 = Status\nEnter exit to quit")
+print("0 = Emergency stop\n1 = On/Off\n2 = Floor actuator\n3 = Doors\n4 = Lift\n5 = Roof\n6 = Status\nEnter (e)xit to quit")
 def mech_test(command):
     if command == '0':
         task = emergency_stop()
@@ -15,21 +21,21 @@ def mech_test(command):
         print(task)
         return
     elif command == '3':
-        side = input("Enter left or right\n").lower()
+        side = input("Enter (l)eft or (r)ight\n").lower()
         task = doors(side)
         print(task)
         return
-    elif command == '5':
-        level = input("Enter top or bottom\n").lower()
+    elif command == '4':
+        level = input("Enter (t)op or (b)ottom\n").lower()
         task = lift(level)
         print(task)
         return
-    elif command == '7':
+    elif command == '5':
         task = roof()
         print(task)
         return
-    elif command == '8':
-        task = status()
+    elif command == '6':
+        task = nest_status()
         print(task)
         return
     else:
@@ -38,7 +44,7 @@ def mech_test(command):
     
 def main():
     command = input('>>>')
-    if command == 'exit':
+    if command == 'exit' or command == 'e':
         return '0'
     mech_test(command)
     return '1'
