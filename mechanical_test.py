@@ -1,10 +1,10 @@
-from mechanical import *
 '''
 This script is used to test mechanical.py. All commands are sent to an arduino that
 will actually control these mechanisms. All commands are sent via USB as serial.
 Austin Flynt
 MS STATE IMPRESS LAB
 '''
+from mechanical import *
 time.sleep(1)
 print("0 = Emergency stop\n1 = On/Off\n2 = Floor actuator\n3 = Doors\n4 = Lift\n5 = Roof\n6 = Status\nEnter (e)xit to quit")
 def mech_test(command):
