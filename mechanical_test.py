@@ -5,8 +5,13 @@ Austin Flynt
 MS STATE IMPRESS LAB
 '''
 from mechanical import *
+
 time.sleep(1)
+
+command_dictionary = {'0': "Emergency Stop",'1': "On/Off Switch", '2': "Linear Actuator", '3': "Left Door", '4': "Right Door", '5': "Lift Actuator", '6': "Doors", '7': "Roof"}
+
 print("0 = Emergency stop\n1 = On/Off\n2 = Floor actuator\n3 = Doors\n4 = Lift\n5 = Roof\n6 = Status\nEnter (e)xit to quit")
+
 def mech_test(command):
     if command == '0':
         task = emergency_stop()
@@ -36,7 +41,9 @@ def mech_test(command):
         return
     elif command == '6':
         task = nest_status()
-        print(task)
+        for index in range(8):
+            print(command_dictionary[str(index)], "=", task[index] + '\n')
+            
         return
     else:
         print("?")
