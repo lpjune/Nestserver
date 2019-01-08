@@ -51,6 +51,8 @@ def lift(level):
         time.sleep(20)
         back_talk = ser.read()
         back_talk = back_talk.decode('ascii')
+        if back_talk == '!':
+            print("Unexpected Input")
         if top == True:
             top = False
         else:
@@ -64,6 +66,8 @@ def lift(level):
         time.sleep(20)
         back_talk = ser.read()
         back_talk = back_talk.decode('ascii')
+        if back_talk == '!':
+            print("Unexpected Input")
         if bottom == True:
             bottom = False
         else:
@@ -82,6 +86,8 @@ def emergency_stop():
     ser.write(command)
     back_talk = ser.read()
     back_talk = back_talk.decode('ascii')
+    if back_talk == '!':
+        print("Unexpected Input")
     
     if back_talk == '1':
         print("EMERGENCY STOP")
@@ -102,6 +108,8 @@ def on_off_switch():
     ser.write(command)
     back_talk = ser.read()
     back_talk = back_talk.decode('ascii')
+    if back_talk == '!':
+        print("Unexpected Input")
     if back_talk == '1':
         #print("On")
         return 'on'
@@ -123,6 +131,8 @@ def doors(side):
         command = '3'.encode('ascii')
         ser.write(command)
         back_talk = ser.read()
+        if back_talk == '!':
+            print("Unexpected Input")
         back_talk = back_talk.decode('ascii')
         if back_talk  == '1':
             left = True
@@ -139,6 +149,8 @@ def doors(side):
             ser.write(command)
             back_talk = ser.read()
             back_talk = back_talk.decode('ascii')
+            if back_talk == '!':
+                print("Unexpected Input")
             if back_talk  == '1':
                 left = True
                 return 'right_open'
@@ -161,6 +173,8 @@ def floor_pad():
     ser.write(command)
     back_talk = ser.read()
     back_talk = back_talk.decode('ascii')
+    if back_talk == '!':
+        print("Unexpected Input")
     if back_talk == '1':
         extended == True
         return 'floor_pad_extended'
@@ -181,6 +195,8 @@ def roof():
     ser.write(command)
     back_talk = ser.read()
     back_talk = back_talk.decode('ascii')
+    if back_talk == '!':
+        print("Unexpected Input")
     if back_talk == '1':
         roof == True
         return 'roof_open'
@@ -212,4 +228,6 @@ def nest_status():
             
     status = data_str
     return status
+
+    
     
