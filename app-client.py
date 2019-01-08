@@ -19,10 +19,12 @@ def kill():
 def send_bottle(message):
     global value
     value = message
+    
+        
 
     
 top = Tk()
-top.attributes("-fullscreen",True)
+#top.attributes("-fullscreen",True)
 top.title('Client')
 defaultc = "status"
 bottle = "waiting...0000"
@@ -88,7 +90,7 @@ def main_func():
     #E4.grid(row=2, column=1)    
 
     #Activity
-    activity = bottle[:-4]
+    activity = bottle[:-5]
 
     if activity.isdigit():
         activity = 'good'
@@ -96,8 +98,8 @@ def main_func():
     L5 = Label(top, text=activity)
     L5.grid(row=4,column=1)
 
-    status = bottle[-4:]
-    status = "Door Status: " + status[0] + "\nRoof Status: " + status[1] + "\nBottom Pad Status: " + status[2] + "\nTop Pad Status: " + status[3]
+    status = bottle[-5:]
+    status = "Door Status: " + status[0] + "\nRoof Status: " + status[1] + "\nBottom Pad Status: " + status[2] + "\nTop Pad Status: " + status[3] + "\nPower Status: " + status[4]
 
     L6 = Label(top, text=status)
     L6.grid(row=5,column=1)
@@ -121,9 +123,11 @@ def main_func():
     B7.grid(row=1,column=7)
     B8 = Button(top, text="Lower Pad", command=lambda:[send_bottle("raisePadSwitchOff"),var.set(1)])
     B8.grid(row=1,column=8)
-    B8 = Button(top, text="Status", command=lambda:[send_bottle("status"),var.set(1)])
-    B8.grid(row=2,column=8)
-    
+    B9 = Button(top, text="Status", command=lambda:[send_bottle("status"),var.set(1)])
+    B9.grid(row=2,column=8)
+    B10 = Button(top, text="On/Off", command=lambda:[send_bottle("switchPower"),var.set(1)])
+    B10.grid(row=2,column=7)
+
     var = IntVar()
     button = Button(top, text="Submit", command=lambda: var.set(1))
     
@@ -173,7 +177,7 @@ def main_func():
         sel.close()
 
     L5.destroy()
-
+        
 
 main_func()
 
