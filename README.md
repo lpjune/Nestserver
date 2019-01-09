@@ -16,3 +16,5 @@ Enter same IP and port number into app-client
 Use buttons to send commands
 
 Use your public ip in the server address line
+
+ND code means that it will cause no delay on the server
