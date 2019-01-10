@@ -34,7 +34,7 @@ def mech_test(command):
         level = input("Enter (t)op or (b)ottom\n").lower()
         task = lift(level, '')
         print(task)
-        input('>>>')
+        input('Press any key to continue...')
         lift('', 'halt')
         return
     elif command == '5':
