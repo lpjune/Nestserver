@@ -6,7 +6,7 @@ import selectors
 import traceback
 from tkinter import *
 import libserver
-
+import serial
 
 top = Tk()
 top.title('Server')
@@ -22,7 +22,8 @@ sel = selectors.DefaultSelector()
 def accept_wrapper(sock):
     conn, addr = sock.accept()  # Should be ready to read
     print("accepted connection from", addr)
-    conn.setblocking(False)
+    #conn = conn.recv(1024).decode().strip()
+    #conn.setblocking(False)
     message = libserver.Message(sel, conn, addr)
     sel.register(conn, selectors.EVENT_READ, data=message)
 
@@ -59,8 +60,9 @@ sel.register(lsock, selectors.EVENT_READ, data=None)
 
 top.destroy()
 
+
 try:
-    while True:            
+    while True:
         events = sel.select(timeout=None)
         for key, mask in events:
             if key.data is None:

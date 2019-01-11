@@ -83,12 +83,23 @@ class Message:
         try:
             # Should be ready to read
             data = self.sock.recv(4096)
+            check = data[1:3].decode()
+            if check != "g{":
+                data = str(data)
+                data, one, two = data.partition("'")
+                two = two[:-3]
+                length = len(two) + 33
+                data = '\x00g{"byteorder": "little", "content-type": "text/json", "content-encoding": "utf-8", "content-length": %d}{"action": "search", "value": "%s"}' % (length,two)
+                data = data.encode()
+            #print(data)
+                
         except BlockingIOError:
             # Resource temporarily unavailable (errno EWOULDBLOCK)
             pass
         else:
             if data:
                 self._recv_buffer += data
+                print(self._recv_buffer)
             else:
                 raise RuntimeError("Peer closed.")
 
@@ -98,6 +109,7 @@ class Message:
             try:
                 # Should be ready to write
                 sent = self.sock.send(self._send_buffer)
+                print(self._send_buffer)
             except BlockingIOError:
                 # Resource temporarily unavailable (errno EWOULDBLOCK)
                 pass
@@ -247,8 +259,9 @@ class Message:
             answer = answer + status
             content = {"result": answer}
             
+            
         else:
-            content = {"result": f'Error: invalid action "{action}".'}
+            content = {"result": f'Error: invalid action "{action}"./n'}
         content_encoding = "utf-8"
         response = {
             "content_bytes": self._json_encode(content, content_encoding),
