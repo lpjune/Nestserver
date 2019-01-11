@@ -38,7 +38,7 @@ def main_func():
     global count
     count = count + 1
     
-    value = 'status'
+    value = 'extendPadSwitchOn'
     sel = selectors.DefaultSelector()
     def create_request(action, value):
         if action == "search":
