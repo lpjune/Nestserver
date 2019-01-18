@@ -268,6 +268,8 @@ class Message:
             "content_type": "text/json",
             "content_encoding": content_encoding,
         }
+
+        response = response + '\n'
         
         return response
     
@@ -290,7 +292,7 @@ class Message:
 
     def read(self):
         self._read()
-
+        ###
         if self._jsonheader_len is None:
             self.process_protoheader()
 
@@ -301,6 +303,7 @@ class Message:
         if self.jsonheader:
             if self.request is None:
                 self.process_request()
+        ###
 
     def write(self):
         if self.request:
@@ -383,3 +386,64 @@ class Message:
         message = self._create_message(**response)
         self.response_created = True
         self._send_buffer += message
+
+
+    def ultra_read(self):
+
+        try:
+            # Should be ready to read
+            data = self.sock.recv(4096)
+            check = data[1:3].decode()
+            if check != "g{":
+                data = str(data)
+                data, one, two = data.partition("'")
+                two = two[:-3]
+                length = len(two) + 33
+                data = '\x00g{"byteorder": "little", "content-type": "text/json", "content-encoding": "utf-8", "content-length": %d}{"action": "search", "value": "%s"}' % (length,two)
+                data = data.encode()
+            print(data)                
+        except BlockingIOError:
+            # Resource temporarily unavailable (errno EWOULDBLOCK)
+            pass
+        else:
+            if data:
+                self._recv_buffer = data
+            else:
+                raise RuntimeError("Peer closed.")
+##        
+##        if self._jsonheader_len is None:
+##            self.process_protoheader()
+##
+##        if self._jsonheader_len is not None:
+##            if self.jsonheader is None:
+##                self.process_jsonheader()
+##
+##        if self.jsonheader:
+##            if self.request is None:
+##                self.process_request()
+        
+
+
+    def ultra_write(self):
+        if self.jsonheader:
+            if self.request is None:
+                self.process_request()
+        
+        if self.request:
+            if not self.response_created:
+                self.create_response()
+
+        if self._send_buffer:
+            #print("sending", repr(self._send_buffer), "to", self.addr)
+            try:
+                # Should be ready to write
+                sent = self.sock.send(self._send_buffer)
+                print(self._send_buffer)
+            except BlockingIOError:
+                # Resource temporarily unavailable (errno EWOULDBLOCK)
+                pass
+            else:
+                self._send_buffer = self._send_buffer[sent:]
+                # Close when the buffer is drained. The response has been sent.
+                if sent and not self._send_buffer:
+                    self.close()

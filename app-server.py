@@ -56,6 +56,7 @@ lsock.bind((host, port))
 lsock.listen()
 print("listening on", (host, port))
 lsock.setblocking(False)
+
 sel.register(lsock, selectors.EVENT_READ, data=None)
 
 top.destroy()
@@ -70,7 +71,10 @@ try:
             else:
                 message = key.data
                 try:
-                    message.process_events(mask)
+                    #message.process_events(mask)
+                    message.ultra_read()
+                    message.ultra_write()
+                    #message._create_response_json_content()
                 except Exception:
                     print(
                         "main: error: exception for",
