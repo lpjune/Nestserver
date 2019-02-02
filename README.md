@@ -1,20 +1,18 @@
 # Nestserver
 Master computer server files for IMPRESS Nest
 
-Launch app-server
+Launch appdriver
 
-Enter public IP into app-server
+Enter public IP
 
-Enter port number (ex. 65432) into app-server
+Enter port number (ex. 65432)
 
-Press submit on app-server
+Press submit
 
-Launch app-client
+Launch clientdriver
 
-Enter same IP and port number into app-client
+Enter same IP and port number
 
 Use buttons to send commands
-
-Use your public ip in the server address line
 
 ND code means that it will cause no delay on the server
