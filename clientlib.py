@@ -5,16 +5,17 @@ import io
 import struct
 import time
 import serial
-from mechanical import *
+from mechanicalND import *
 
 # receive messages
 # decode and strip whitespace/newlines
 def receiver(socket):
-    data = conn.recv(1024).decode().strip()
+    data = socket.recv(4096).decode().strip()
     print(data)
     return data
 
 # send encoded message
 def sender(socket, message):
     socket.send(message.encode())
+    print(message)
     return

@@ -21,7 +21,7 @@ connect_mech()
 L1 = Label(top, text="Server")
 L1.grid(row=0, column=0)
 E1 = Entry(top, bd = 5)
-E1.insert(END, '192.168.0.4')
+E1.insert(END, '192.168.0.7')
 E1.grid(row=0, column=1)
 
 L2 = Label(top, text="Port")

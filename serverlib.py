@@ -5,7 +5,7 @@ import io
 import struct
 import time
 import serial
-from mechanical import *
+from mechanicalND import *
 
 # status of all NEST components
 # 0 = closed/off, 1 = open/on
@@ -14,6 +14,7 @@ roofStatus = 0
 bPadStatus = 0
 tPadStatus = 0
 powerStatus = 0
+
 
 status = str(doorStatus) + str(roofStatus) + str(bPadStatus) + str(tPadStatus) + str(powerStatus)
 
@@ -45,7 +46,7 @@ request_dict = {
 # receive messages from Connection
 # decode and strip whitespace/newlines
 def receiver(conn):
-    data = conn.recv(1024).decode().strip()
+    data = conn.recv(4096).decode().strip()
     print(data)
     return data
 
@@ -73,6 +74,7 @@ def create_response(query):
     global tPadStatus
     global powerStatus
     global status
+    global motorStatus
 
     motorStatus = nest_status()
 
@@ -146,6 +148,7 @@ def machine_control(answer):
     global tPadStatus
     global powerStatus
     global status
+    global motorStatus
 
     if answer == "Opening doors...":
         left = doors("left")

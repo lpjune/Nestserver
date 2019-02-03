@@ -16,13 +16,16 @@ def kill():
 # starts socket connection with IP and Port from GUI
 # returns socket
 def connect():
+    global sock
     host = E1.get()
     port = int(E2.get())
     addr = (host, port)
     print("starting connection to", addr)
-    sock = socket.socket()
-    sock.connect((host, port))
-    return sock
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setblocking(False)
+    sock.connect_ex(addr)
+
+
 
 
 L6 = Label(top, text=status)
@@ -31,7 +34,7 @@ L6.grid(row=5,column=1)
 L1 = Label(top, text="Server")
 L1.grid(row=0, column=0)
 E1 = Entry(top, bd = 5)
-E1.insert(END, '192.168.0.4')
+E1.insert(END, '192.168.0.7')
 E1.grid(row=0, column=1)
 # Port TextEdit
 L2 = Label(top, text="Port")
@@ -47,8 +50,9 @@ button = Button(top, text="Submit", command=lambda:[connect(), var.set(1)])
 button.grid(row=2, column=1)
 
 # Exit Button
-exitb = Button(top, text="Exit", command=kill)
+exitb = Button(top, text="Exit", command=lambda:[exitb()])
 exitb.grid(row=3, column=1)
+
 
 # Rows of Buttons
 # Send messages to server on click
@@ -93,10 +97,10 @@ B10 = Button(top, text="On/Off", command=lambda:[sender(sock, "switchPower"),var
 B10.grid(row=2,column=7)
 button.wait_variable()
 
-sock = connect()
-
-# continuously connect to server
-# listen for response from server
 running = True
 while running:
     receiver(sock)
+
+
+# continuously connect to server
+# listen for response from server
