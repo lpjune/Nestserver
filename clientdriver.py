@@ -2,9 +2,30 @@ import sys
 import socket
 from tkinter import *
 from serverlib import *
-from clientlib import *
+global sock
+
+def receiver(socket):
+    data = str(socket.recv(4096).decode())
+    print(data)
+    return data
+
+# send encoded message
+def sender(socket, message):
+    socket.send(message.encode())
+    print(message)
+    receiver(sock)
+    return
 
 
+def connecting():
+    global sock
+    host = E1.get()
+    port = int(E2.get())
+    addr = (host, port)
+    print("starting connection to", addr)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect_ex(addr)
+    receiver(sock)
 
 top = Tk()
 top.title('Client')
@@ -15,16 +36,6 @@ def kill():
 
 # starts socket connection with IP and Port from GUI
 # returns socket
-def connect():
-    global sock
-    host = E1.get()
-    port = int(E2.get())
-    addr = (host, port)
-    print("starting connection to", addr)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setblocking(False)
-    sock.connect_ex(addr)
-
 
 
 
@@ -43,20 +54,14 @@ E2 = Entry(top, bd = 5)
 E2.insert(END, '65432')
 E2.grid(row=1, column=1)
 
-# Submit Button
-# connects to server
-var = IntVar()
-button = Button(top, text="Submit", command=lambda:[connect(), var.set(1)])
-button.grid(row=2, column=1)
 
-# Exit Button
-exitb = Button(top, text="Exit", command=lambda:[exitb()])
-exitb.grid(row=3, column=1)
+
 
 
 # Rows of Buttons
 # Send messages to server on click
 # Open Door Button
+var = IntVar()
 B1 = Button(top, text="Open Doors", command=lambda:[sender(sock, "doorsSwitchOn"),var.set(1)])
 B1.grid(row=0,column=5)
 
@@ -95,12 +100,15 @@ B9.grid(row=2,column=8)
 # Power Button
 B10 = Button(top, text="On/Off", command=lambda:[sender(sock, "switchPower"),var.set(1)])
 B10.grid(row=2,column=7)
-button.wait_variable()
 
-running = True
-while running:
-    receiver(sock)
+# Submit Button
+# connects to server
+var = IntVar()
+button = Button(top, text="Submit", command=lambda: [connecting(),var.set(1)])
+button.grid(row=2, column=1)
 
-
-# continuously connect to server
-# listen for response from server
+# Exit Button
+exitb = Button(top, text="Exit", command=lambda:[exitb()])
+exitb.grid(row=3, column=1)
+button.wait_variable(var)
+top.mainloop()

@@ -10,7 +10,7 @@ from mechanicalND import *
 # receive messages
 # decode and strip whitespace/newlines
 def receiver(socket):
-    data = socket.recv(4096).decode().strip()
+    data = str(socket.recv(4096).decode())
     print(data)
     return data
 

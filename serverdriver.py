@@ -57,6 +57,7 @@ top.destroy()
 conn, address = lsock.accept()
 lsock.setblocking(False)
 print("accepted connection from", address)
+sender(conn, "connected")
 
 # listen for messages
 running = True
