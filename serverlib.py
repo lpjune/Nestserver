@@ -110,29 +110,32 @@ def create_error_response(query):
     global powerStatus
     global status
     if query == "doorsSwitchOff" and bPadStatus == '1':
-        answer = "Error: Cannot close doors with bottom pad extended"
-    elif query == "extendPadSwitchOn" and doorStatus == '0':
-        answer = "Error: Cannot extend pad with doors closed"
-    elif query == "raisePadSwitchOn" and roofStatus == '0':
-        answer = "Error: Cannot raise pad with roof closed"
-    elif query == "roofSwitchOff" and tPadStatus == '1':
-        answer = "Error: Cannot close roof with pad raised"
-    elif query == "doorsSwitchOn" and doorStatus == '1':
-        answer = "Error: Doors already open"
+        answer = "Door Error: Cannot close doors with bottom pad extended"
     elif query == "doorsSwitchOff" and doorStatus == '0':
-        answer = "Error: Doors already closed"
+        answer = "Door Error: Doors already closed"
+    elif query == "doorsSwitchOn" and doorStatus == '1':
+        answer = "Door Error: Doors already open"
+
     elif query == "roofSwitchOn" and roofStatus == '1':
-        answer = "Error: Roof already open"
+        answer = "Roof Error: Roof already open"
     elif query == "roofSwitchOff" and roofStatus == '0':
-        answer = "Error: Roof already closed"
+        answer = "Roof Error: Roof already closed"
+    elif query == "roofSwitchOff" and tPadStatus == '1':
+        answer = "Roof Error: Cannot close roof with pad raised"
+
+    elif query == "extendPadSwitchOn" and doorStatus == '0':
+        answer = "Extend Error: Cannot extend pad with doors closed"
     elif query == "extendPadSwitchOn" and bPadStatus == '1':
-        answer = "Error: Bottom Pad already extended"
+        answer = "Extend Error: Bottom Pad already extended"
     elif query == "extendPadSwitchOff" and bPadStatus == '0':
-        answer = "Error: Bottom Pad already retracted"
+        answer = "Extend Error: Bottom Pad already retracted"
+
+    elif query == "raisePadSwitchOn" and roofStatus == '0':
+        answer = "Raise Error: Cannot raise pad with roof closed"
     elif query == "raisePadSwitchOn" and tPadStatus == '1':
-        answer = "Error: Top Pad already raised"
+        answer = "Raise Error: Top Pad already raised"
     elif query == "raisePadSwitchOff" and tPadStatus == '0':
-        answer = "Error: Top Pad already lowered"
+        answer = "Raise Error: Top Pad already lowered"
     else:
         answer = 0
     return answer
