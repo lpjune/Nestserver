@@ -24,11 +24,3 @@ class DronePi():
 
     def close(self):
         self.ssh.close()
-
-def main():
-    pi = DronePi('169.254.240.225')
-    pi.connect()
-    pi.read_file("/home/pi/MyCopter/logs/2019-03-05/flight2/flight.tlog","C:\\Python27\\UAV\\flight1.tlog")
-    pi.close()
-
-main()
