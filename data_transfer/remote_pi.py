@@ -1,3 +1,7 @@
+#########################################################
+# t_logs are located in the following directory:        #
+# /home/pi/MyCopter/logs/yyyy-mm-dd/flight#/flight.tlog #
+######################################################### 
 import paramiko
 
 class DronePi():
