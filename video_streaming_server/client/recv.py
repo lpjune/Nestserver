@@ -1,4 +1,6 @@
 #py recv.py ipv4_address local
+# cd nestserver/video_streaming_server/client
+#py recv.py 192.168.0.7 local
 
 #!/usr/bin/python
 import socket
@@ -15,6 +17,7 @@ client_socket.connect((host, 5005))
 name = "Video"
 
 client_socket.send(str.encode(cam_url))
+print(cam_url)
 
 def rcv():
     data = b''

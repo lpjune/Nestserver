@@ -33,6 +33,7 @@ while 1:
 
         else:
             opened_cameras[cam_url].addConnection(client_socket)
+            
 
     except socket.timeout:
         continue
