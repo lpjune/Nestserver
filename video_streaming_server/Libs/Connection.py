@@ -1,3 +1,8 @@
+### Written by Luke Redwine at Impress Labs
+### This file accesses the camera on the master computer
+### and encodes the file into jpg format and then 
+### encode it into a string
+
 import cv2
 import socket
 import signal
