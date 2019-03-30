@@ -11,6 +11,7 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.bind(("", 5005))
 server_socket.listen(5)
 
+#camera array
 opened_cameras = {}
 
 
