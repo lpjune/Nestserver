@@ -1,3 +1,6 @@
+### Written by Luke Redwine at Impress Labs
+### This file gathers the encoded jpegs and sends them to the client
+
 import sys
 import socket
 import _thread
