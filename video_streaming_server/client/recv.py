@@ -1,3 +1,7 @@
+### Written by Luke Redwine at Impress Labs
+### This file recieves the encoded string, converts it into an int
+### and reencodes it for OPENCV to see
+
 #py recv.py ipv4_address local
 # cd nestserver/video_streaming_server/client
 #py recv.py 192.168.0.7 local
