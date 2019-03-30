@@ -18,6 +18,7 @@ class Connection(object):
 
 
     def connect(self):
+        #cv2 Video Capture key
         self.connection = cv2.VideoCapture(0) #number dictates camera
         return self.connection
 
@@ -29,9 +30,11 @@ class Connection(object):
         while 1:
             try:
                 ret, frame = self.connection.read()
+                #frame encoding, here is where you could do the byte encoding
                 data = cv2.imencode('.jpg', frame)[1].tostring()
                 if len(self.socket):
                     for c in self.socket:
+                        #sending data until there is none left to send
                         self.send(c,data)
                 else:
                     self.connection.release()
