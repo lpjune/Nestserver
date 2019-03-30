@@ -9,13 +9,18 @@ import numpy
 import random
 import sys
 
+#system arguements
 host = sys.argv[1] # e.g. localhost, 192.168.1.123
 cam_url = sys.argv[2] # rtsp://user:pass@url/live.sdp , http://url/video.mjpg ...
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+#connection made
 client_socket.connect((host, 5005))
+
 name = "Video"
 
+#socket encoding for video address
 client_socket.send(str.encode(cam_url))
 print(cam_url)
 
@@ -36,12 +41,16 @@ def rcv():
             print(e)
             continue
     nparr = numpy.fromstring(data, numpy.uint8)
+    #opecv frame capture
     frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     if type(frame) is type(None):
         pass
     else:
         try:
+            #display frame to user
             cv2.imshow(name,frame)
+            
+            #kill key
             if cv2.waitKey(10) == ord('q'):
                 client_socket.close()
                 sys.exit()
