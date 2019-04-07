@@ -30,14 +30,15 @@ def gen(camera):
 @app.route('/video_feed')
 def video_feed():
     """video streaming route, put in src attribute of an img tag"""
-    return Response(gen(BaseCamera()),
+    return Response(gen(BaseCamera(0)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed2')
 def video_feed2():
     """video streaming route, put in src attribute of an img tag"""
-    return Response(gen(BaseCamera()),
+    return Response(gen(BaseCamera(1)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+                    
 
 
 if __name__ == '__main__':
