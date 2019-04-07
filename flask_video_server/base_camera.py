@@ -1,5 +1,6 @@
 import time
 import threading
+import cv2
 try:
     from greenlet import getcurrent as get_ident
 except ImportError:
@@ -56,6 +57,7 @@ class BaseCamera(object):
     frame = None  # current frame is stored here by background thread
     last_access = 0  # time of last client access to the camera
     event = CameraEvent()
+    video_source = 1
 
     def __init__(self):
         """start the background camera thread if not running"""
@@ -69,6 +71,10 @@ class BaseCamera(object):
             # wait until frames are available
             while self.get_frame() is None:
                 time.sleep(0)
+    
+    @staticmethod
+    def set_video_source(source):
+        BaseCamera.video_source = source
 
     def get_frame(self):
         """return current camera frame"""
@@ -82,8 +88,16 @@ class BaseCamera(object):
 
     @staticmethod
     def frames():
-        """"generator that returns frames from the camera"""
-        raise RuntimeError('Must be implemented by subclasses.')
+        camera = cv2.VideoCapture(BaseCamera.video_source)
+        if not camera.isOpened():
+            raise RuntimeError('Could not start camera')
+
+        while True:
+            # read current frame
+            _, img = camera.read()
+
+            # encode as a jpeg image and return it
+            yield cv2.imencode('.jpg', img)[1].tobytes()
 
     @classmethod
     def _thread(cls):

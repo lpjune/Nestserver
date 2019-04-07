@@ -10,7 +10,7 @@ from flask import Flask, render_template, Response
 if os.environ.get('CAMERA'):
     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
 else:
-    from camera_opencv import Camera
+    from base_camera import BaseCamera
 
 app = Flask(__name__)
 
@@ -30,7 +30,13 @@ def gen(camera):
 @app.route('/video_feed')
 def video_feed():
     """video streaming route, put in src attribute of an img tag"""
-    return Response(gen(Camera()),
+    return Response(gen(BaseCamera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/video_feed2')
+def video_feed2():
+    """video streaming route, put in src attribute of an img tag"""
+    return Response(gen(BaseCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
