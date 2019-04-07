@@ -52,15 +52,20 @@ class CameraEvent(object):
         self.events[get_ident()][0].clear()
 
 
-class BaseCamera():
-    thread = None  # background thread that reads frames from camera
-    frame = None  # current frame is stored here by background thread
-    last_access = 0  # time of last client access to the camera
+class Camera():
+    # background thread that reads frames from camera
+    thread = None
+    # current frame is stored here by background thread
+    frame = None
+    # time of last client access to the camera  
+    last_access = 0  
     event = CameraEvent()
 
     def __init__(self, vsrc):
-        """start the background camera thread if not running"""
+        # set video source
         self.video_source = vsrc
+
+        # start background frame thread if not running
         if self.thread is None:
             self.last_access = time.time()
 
