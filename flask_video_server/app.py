@@ -21,7 +21,7 @@ def index():
 
 
 """video streaming generator function."""
-def gen(camera):
+def cam_gen(camera):
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'
@@ -29,15 +29,15 @@ def gen(camera):
 
 
 """video streaming routes"""
-@app.route('/video_feed')
-def video_feed():
+@app.route('/video_feed1')
+def video_feed1():
     
-    return Response(gen(Camera(0)),
+    return Response(cam_gen(Camera(0)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed2')
 def video_feed2():
-    return Response(gen(Camera(1)),
+    return Response(cam_gen(Camera(1)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
                     
 

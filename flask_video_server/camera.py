@@ -52,6 +52,7 @@ class CameraEvent(object):
         self.events[get_ident()][0].clear()
 
 
+
 class Camera():
     # background thread that reads frames from camera
     thread = None
