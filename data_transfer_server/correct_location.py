@@ -35,6 +35,5 @@ def correct_landing(vehicle, speed, increment, remote_file_path, local_file_path
     
     point = LocationGlobalRelative(new_lat, new_long, new_alt)
     vehicle.simple_goto(point, groundspeed=speed)
-    time.sleep(increment/speed)
     
     return new_lat, new_long, new_alt
